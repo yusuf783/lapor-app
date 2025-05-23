@@ -36,17 +36,26 @@ class PengaduanController extends Controller
      */
      public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama_pelapor' => 'required|string|max:255',
-            'no_hp' => 'required|numeric',
-            'nomor_identitas' => 'required|string|max:255',
-            'status_pelapor' => 'required|string|in:tendik,dosen,mahasiswa',
-            'judul_permasalahan' => 'required|string|max:255',
-            'lokasi_permasalahan' => 'required|string|max:255',
-            'jenis_layanan' => 'required|string|in:air,listrik,komputer,kebersihan,internet,lainnya',
-            'deskripsi_permasalahan' => 'required|string',
-            'upload_bukti' => 'required|image|mimes:jpeg,png|max:2048',
-        ]);
+       $validated = $request->validate([
+    'nama_pelapor' => 'required|string|max:255',
+    'no_hp' => 'required|numeric',
+    'nomor_identitas' => 'required|string|max:255',
+    'status_pelapor' => 'required|string|in:tendik,dosen,mahasiswa',
+    'judul_permasalahan' => 'required|string|max:255',
+    'lokasi_permasalahan' => 'required|string|max:255',
+    'jenis_layanan' => 'required|string|in:air,listrik,komputer,kebersihan,internet,lainnya',
+    'deskripsi_permasalahan' => 'required|string',
+    'upload_bukti' => 'required|image|mimes:jpeg,png|max:2048',
+], [
+    'required' => ':attribute wajib di isi.',
+    'numeric' => ':attribute harus berupa angka.',
+    'string' => ':attribute harus berupa teks.',
+    'max' => ':attribute tidak boleh lebih dari :max karakter.',
+    'image' => ':attribute harus berupa gambar.',
+    'mimes' => ':attribute harus berformat jpeg atau png.',
+    'in' => 'Pilihan :attribute tidak valid.'
+]);
+
 
         // Handle file upload
         if ($request->hasFile('upload_bukti')) {

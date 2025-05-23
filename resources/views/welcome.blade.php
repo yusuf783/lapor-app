@@ -282,6 +282,7 @@
             <!-- to get an API token!-->
             <form id="contactForm" enctype="multipart/form-data">
                 <div class="row align-items-stretch mb-3">
+          
                     <div class="col-md-6">
                         <div class="form-group">
                             <!-- Name input-->
@@ -864,7 +865,7 @@
         }
     });
 </script>
-
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
         $(window).ready(function () {
             // $('#contactForm').captcha();
@@ -895,9 +896,39 @@
                         alert('data berhasil di input');
                         $('#contactForm')[0].reset();;
                     },
-                    error: function (xhr, status, error) {
-                        console.error('Upload error:', error);
-                    }
+                    error: function (xhr) {
+    if (xhr.status === 422) {
+        let errors = xhr.responseJSON.errors;
+        
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').hide();
+
+        // Loop through each error and attach to the field
+        $.each(errors, function (key, messages) {
+            console.log(errors);
+            console.log(key);
+            let input = $('[name="' + key + '"]');
+            input.addClass('is-invalid');
+
+            let feedback = input.siblings('.invalid-feedback');
+            if (feedback.length) {
+                feedback.text(messages[0]).show();
+            } else {
+                // Create a feedback element if not found
+                input.after('<div class="invalid-feedback d-block">' + messages[0] + '</div>');
+            }
+        });
+    } else {
+        Swal.fire({
+            title: 'Terjadi Kesalahan!',
+            text: 'Silakan coba lagi.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
                 })
 
 
@@ -905,10 +936,17 @@
 
         })
 
+
+        $('input, textarea, select').on('input change', function () {
+    $(this).removeClass('is-invalid');
+    $(this).siblings('.invalid-feedback').hide();
+});
+
     </script>
     <!-- Bootstrap core JS-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Core theme JS-->
+ 
     <script src="site/js/scripts.js"></script>
     <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
     <!-- * *                               SB Forms JS                               * *-->
