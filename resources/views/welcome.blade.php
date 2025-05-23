@@ -855,7 +855,12 @@
                 // success handle, e.g. continue with form submit
             }
             if ( response == 'error' ) {
-                alert('isikan captcha dengan benar')
+                Swal.fire({
+            title: 'Capctha tidak benar!',
+            text: 'Silakan coba lagi.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
                 myCaptcha.reset();
 
                 if (numberOfTries === 3) {
