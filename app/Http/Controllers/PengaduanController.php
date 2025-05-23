@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pengaduan;
+use Ixudra\Curl\Facades\Curl;
 
+ 
 class PengaduanController extends Controller
 {
     /**
@@ -51,8 +53,25 @@ class PengaduanController extends Controller
             $path = $request->file('upload_bukti')->store('upload_bukti', 'public');
             $validated['upload_bukti'] = $path;
         }
-        $validated['status_laporan'] = 'open';
-        Pengaduan::create($validated);
+        $validated['status_laporan'] = 'open'; 
+
+      
+        $pengaduan = Pengaduan::create($validated);
+        $url = 'http://lapor-app.test/admin';
+        if($pengaduan){
+            $text =  "Laporan Baru !\n".
+            " ".$pengaduan->judul_permasalahan.":\n\n".
+            "Nama Pelapor :".$pengaduan->nama_pelapor."\n".
+            "Nomor Hp :".$pengaduan->no_hp."\n".
+            "Lokasi :".$pengaduan->lokasi_permasalahan."\n".
+            "Silahkan kunjungi alamat berikut : `".$url."`";
+     
+
+        Curl::to('https://api.telegram.org/bot2089009414:AAHnvnPOlmmdoA1zJ6SX66hp-JeZODhdoHE/sendMessage')
+            ->withData( array( 'chat_id' => '-4959359726', 'text' => $text, 'parse_mode' => 'Markdown') )
+            ->get();
+
+        }
 
         return response()->json('Pengaduan submitted successfully!');
     }
